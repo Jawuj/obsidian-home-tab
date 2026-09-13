@@ -44,7 +44,7 @@ declare module 'obsidian'{
 	}
 	interface WorkspaceLeaf{
 		rebuildView: Function
-		parent: WorkspaceSplit
+		parent: WorkspaceTabs | WorkspaceMobileDrawer
 		activeTime: number
 		app: App
 	}

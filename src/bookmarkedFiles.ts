@@ -6,10 +6,12 @@ import type { LucideIcon } from "./utils/lucideIcons";
 export interface bookmarkedFileStore{
     filepath: string
     iconId: LucideIcon | undefined
+    iconColor?: string
 }
 export interface bookmarkedFile{
     file: TFile
     iconId: LucideIcon | undefined
+    iconColor?: string
 }
 
 export class bookmarkedFilesManager extends Component{
@@ -40,10 +42,21 @@ export class bookmarkedFilesManager extends Component{
             const updatedArray: bookmarkedFile[] = []
 
             bookmarkedFiles.forEach((bookmarkedFile) => {
+                const existingItem = filesArray.find((item) => item.file === bookmarkedFile)
+                let iconId = existingItem?.iconId ?? undefined
+                let iconColor = existingItem?.iconColor ?? undefined
+                if (iconId && (iconId as string).includes('::')) {
+                    const [parsedIcon, parsedColor] = (iconId as string).split('::')
+                    iconId = parsedIcon as LucideIcon
+                    if (!iconColor && parsedColor) {
+                        iconColor = parsedColor
+                    }
+                }
                 updatedArray.push({
                     file: bookmarkedFile,
-                    // Retrieve icon from stored array
-                    iconId: filesArray.find((item) => item.file === bookmarkedFile)?.iconId ?? undefined
+                    // Retrieve icon and color from stored array
+                    iconId: iconId,
+                    iconColor: iconColor
                 })
             })
             
@@ -53,10 +66,20 @@ export class bookmarkedFilesManager extends Component{
         this.storeBookmarkedFiles()
     }
 
-    public updateFileIcon(file: TFile, iconId: LucideIcon): void{
+    public updateFileIcon(file: TFile, iconId?: LucideIcon, iconColor?: string): void{
         this.bookmarkedFilesStore.update((filesArray) => {
             const itemIndex = filesArray.findIndex((item) => item.file === file)
-            filesArray[itemIndex].iconId = iconId
+            if (itemIndex > -1) {
+                if (iconId && (iconId as string).includes('::')) {
+                    const [parsedIcon, parsedColor] = (iconId as string).split('::')
+                    iconId = parsedIcon as LucideIcon
+                    if (!iconColor && parsedColor) {
+                        iconColor = parsedColor
+                    }
+                }
+                filesArray[itemIndex].iconId = iconId
+                filesArray[itemIndex].iconColor = iconColor
+            }
             return filesArray
         })
 
@@ -84,10 +107,22 @@ export class bookmarkedFilesManager extends Component{
     private async storeBookmarkedFiles(): Promise<void>{
         if(this.app.internalPlugins.getPluginById('bookmarks')){
             let storeObj: bookmarkedFileStore[] = []
-            get(this.bookmarkedFilesStore).forEach((item) => storeObj.push({
-                filepath: item.file.path, // Store only the path instead of the entire TFile instance
-                iconId: item.iconId
-            }))
+            get(this.bookmarkedFilesStore).forEach((item) => {
+                let iconId = item.iconId
+                let iconColor = item.iconColor
+                if (iconId && (iconId as string).includes('::')) {
+                    const [parsedIcon, parsedColor] = (iconId as string).split('::')
+                    iconId = parsedIcon as LucideIcon
+                    if (!iconColor && parsedColor) {
+                        iconColor = parsedColor
+                    }
+                }
+                storeObj.push({
+                    filepath: item.file.path, // Store only the path instead of the entire TFile instance
+                    iconId: iconId,
+                    iconColor: iconColor
+                })
+            })
             this.plugin.settings.bookmarkedFileStore = storeObj
             await this.plugin.saveData(this.plugin.settings)
         }
@@ -100,9 +135,21 @@ export class bookmarkedFilesManager extends Component{
                 this.plugin.settings.bookmarkedFileStore.forEach((item) => {
                     let file: TAbstractFile | null = this.app.vault.getAbstractFileByPath(item.filepath)
                     if(file && file instanceof TFile){
+                        let iconId = item.iconId
+                        let iconColor = item.iconColor
+                        if (iconId && (iconId as string).includes('::')) {
+                            const [parsedIcon, parsedColor] = (iconId as string).split('::')
+                            iconId = parsedIcon as LucideIcon
+                            if (!iconColor && parsedColor) {
+                                iconColor = parsedColor
+                            }
+                            item.iconId = iconId
+                            item.iconColor = iconColor
+                        }
                         filesToLoad.push({
                             file: file,
-                            iconId: item.iconId
+                            iconId: iconId,
+                            iconColor: iconColor
                         })
                     }
                 })

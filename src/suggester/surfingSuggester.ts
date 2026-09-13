@@ -1,5 +1,5 @@
 import type Fuse from 'fuse.js'
-import { Platform, Plugin_2, View, WorkspaceLeaf, type App } from 'obsidian'
+import { Platform, Plugin as Plugin_2, View, WorkspaceLeaf, type App } from 'obsidian'
 import type HomeTab from '../main'
 import type HomeTabSearchBar from "src/homeTabSearchbar"
 import { TextInputSuggester } from './suggester'
@@ -18,6 +18,7 @@ interface SurfingView extends View{
     navigate: (url: string, addToHistory?: boolean, updateWebView?: boolean) => void
 }
 interface WebBrowserViewState{
+	[key: string]: unknown
 	url: string
 	active?: boolean
 }

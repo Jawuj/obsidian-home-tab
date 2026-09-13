@@ -14,8 +14,6 @@
 
     let selectedFile: TFile
 
-    const selectIconModal: IconSelectionModal = new IconSelectionModal(app, undefined, (icon) => bookmarkedFileManager.updateFileIcon(selectedFile, icon))
-
     const contextualMenu: Menu = new Menu()
             .addItem((item) => item
                 .setTitle('Remove bookmark')
@@ -25,13 +23,28 @@
             .addItem((item) => item
                 .setTitle('Set custom icon')
                 .setIcon('plus')
-                .onClick(() => selectIconModal.open()))
+                .onClick(() => {
+                    const currentBookmark = bookmarkedFiles.find((item) => item.file === selectedFile)
+                    let iconId = currentBookmark?.iconId
+                    let iconColor = currentBookmark?.iconColor
+                    if (iconId && (iconId as string).includes('::')) {
+                        const [parsedIcon, parsedColor] = (iconId as string).split('::')
+                        iconId = parsedIcon as import('src/utils/lucideIcons').LucideIcon
+                        iconColor = iconColor ?? parsedColor
+                    }
+                    new IconSelectionModal(
+                        app,
+                        iconId,
+                        iconColor,
+                        (icon, color) => bookmarkedFileManager.updateFileIcon(selectedFile, icon, color)
+                    ).open()
+                }))
             .setUseNativeMenu(app.vault.config.nativeMenus)  
 </script>
 
 <div class="home-tab-bookmarked-files-container">
     {#each bookmarkedFiles as item (item.file.path)}
-        <FileDisplayItem file={item.file} customIcon={item.iconId} {app} {pluginSettings} {contextualMenu}
+        <FileDisplayItem file={item.file} customIcon={item.iconId} customIconColor={item.iconColor} {app} {pluginSettings} {contextualMenu}
         on:itemMenu={(e) => selectedFile = e.detail.file}/>
     {/each}
 </div>

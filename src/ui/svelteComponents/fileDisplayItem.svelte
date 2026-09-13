@@ -11,6 +11,14 @@
     export let pluginSettings: HomeTabSettings
     export let contextualMenu: Menu
     export let customIcon: LucideIcon | undefined = undefined
+    export let customIconColor: string | undefined = undefined
+
+    $: resolvedIcon = (customIcon && (customIcon as string).includes('::')) 
+        ? ((customIcon as string).split('::')[0] as LucideIcon) 
+        : customIcon
+    $: resolvedColor = (customIcon && (customIcon as string).includes('::'))
+        ? (customIconColor ?? (customIcon as string).split('::')[1])
+        : customIconColor
 
     // Trim filename if too long
     // const filename = file.basename.length > 38 ? file.basename.slice(0,35) + '...' : file.basename
@@ -44,12 +52,13 @@
     </div>
 
     <div class="home-tab-file-item-preview-icon">
-        {#if customIcon}
+        {#if resolvedIcon}
             <svg xmlns="http://www.w3.org/2000/svg"  width="24" height="24" 
                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="1" stroke-linecap="round" stroke-linejoin="round" 
-                        class="lucide-icon lucide lucide-{customIcon}">
-                            {@html getIcon(customIcon)?.innerHTML}
+                        class="lucide-icon lucide lucide-{resolvedIcon}"
+                        style={resolvedColor ? `color: ${resolvedColor}` : undefined}>
+                            {@html getIcon(resolvedIcon)?.innerHTML}
             </svg>
         {:else}
             {#if fileType === 'markdown'}
