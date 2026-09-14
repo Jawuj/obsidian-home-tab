@@ -17,7 +17,7 @@
                 .setTitle('Hide file')
                 .setIcon('eye-off')
                 .onClick(() => recentFileManager.removeRecentFile(selectedFile)))
-            .setUseNativeMenu(app.vault.config.nativeMenus)
+            .setUseNativeMenu(app.vault?.config?.nativeMenus ?? false)
 </script>
 
 <div class="home-tab-recent-files-container">

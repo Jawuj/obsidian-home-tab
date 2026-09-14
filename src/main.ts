@@ -78,7 +78,7 @@ export default class HomeTab extends Plugin {
 
 		this.activeEmbeddedHomeTabViews = []
 
-		this.recentFileManager = new RecentFileManager(app, this)
+		this.recentFileManager = new RecentFileManager(this.app, this)
 		this.recentFileManager.load()
 
 		this.addCommand({
@@ -92,8 +92,8 @@ export default class HomeTab extends Plugin {
 
 		// Wait for all plugins to load before check if the bookmarked plugin is enabled
 		this.app.workspace.onLayoutReady(() => {
-			if(this.app.internalPlugins.getPluginById('bookmarks')){
-				this.bookmarkedFileManager = new bookmarkedFilesManager(app, this, bookmarkedFiles)
+			if(this.app.internalPlugins?.getPluginById?.('bookmarks')){
+				this.bookmarkedFileManager = new bookmarkedFilesManager(this.app, this, bookmarkedFiles)
 				this.bookmarkedFileManager.load()
 			}
 
@@ -108,9 +108,9 @@ export default class HomeTab extends Plugin {
 
 			if(this.settings.newTabOnStart){
 				// If an Home tab leaf is already open focus it
-				const leaves = app.workspace.getLeavesOfType(VIEW_TYPE)
+				const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE)
 				if(leaves.length > 0){
-					app.workspace.revealLeaf(leaves[0])
+					this.app.workspace.revealLeaf(leaves[0])
 					// If more than one home tab leaf is open close them
 					leaves.forEach((leaf, index) => {
 						if(index < 1) return
@@ -124,13 +124,13 @@ export default class HomeTab extends Plugin {
 				if(this.settings.closePreviousSessionTabs){
 					// Get open leaves type
 					const leafTypes: string[] = []
-					app.workspace.iterateRootLeaves((leaf) => {
+					this.app.workspace.iterateRootLeaves((leaf) => {
 						const leafType = leaf.view.getViewType()
 						if(leafTypes.indexOf(leafType) === -1 && leafType != VIEW_TYPE){
 							leafTypes.push(leafType)
 						}
 					})
-					leafTypes.forEach((type) => app.workspace.detachLeavesOfType(type))
+					leafTypes.forEach((type) => this.app.workspace.detachLeavesOfType(type))
 				}
 			}
 		})
@@ -159,14 +159,14 @@ export default class HomeTab extends Plugin {
 	}
 
 	public activateView(overrideView?: boolean, openNewTab?: boolean):void {
-		const leaf = openNewTab ? app.workspace.getLeaf('tab') : app.workspace.getMostRecentLeaf()
+		const leaf = openNewTab ? this.app.workspace.getLeaf('tab') : this.app.workspace.getMostRecentLeaf()
 		// const leaf = newTab ? app.workspace.getLeaf() : app.workspace.getMostRecentLeaf()
 		if(leaf && (overrideView || leaf.getViewState().type === 'empty')){
 			leaf.setViewState({
 				type: VIEW_TYPE,
 			})
 			// Focus newly opened tab
-			if(openNewTab){app.workspace.revealLeaf(leaf)}
+			if(openNewTab){this.app.workspace.revealLeaf(leaf)}
 		}
 	}
 

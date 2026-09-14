@@ -39,7 +39,7 @@
                         (icon, color) => bookmarkedFileManager.updateFileIcon(selectedFile, icon, color)
                     ).open()
                 }))
-            .setUseNativeMenu(app.vault.config.nativeMenus)  
+            .setUseNativeMenu(app.vault?.config?.nativeMenus ?? false)
 </script>
 
 <div class="home-tab-bookmarked-files-container">

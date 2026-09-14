@@ -238,7 +238,7 @@ export abstract class PopoverTextInputSuggester<T> extends TextInputSuggester<T>
     private popperWrapper: HTMLElement
     
     constructor(app: App, inputEl: HTMLInputElement, viewOptions?: suggesterViewOptions){
-        super(app, inputEl, app.dom.appContainerEl, viewOptions)
+        super(app, inputEl, app.dom?.appContainerEl ?? document.body, viewOptions)
     }
 
     getContainerEl(): HTMLElement {

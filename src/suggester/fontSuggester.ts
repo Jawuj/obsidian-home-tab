@@ -1,8 +1,7 @@
 import { PopoverTextInputSuggester,  type suggesterViewOptions } from "./suggester"
 import type Fuse from 'fuse.js'
-import type { App, } from 'obsidian'
+import { Platform, type App } from 'obsidian'
 import { ArrayFuzzySearch } from "./fuzzySearch"
-import { getFonts } from 'font-list'
 import FontSuggestion from "src/ui/svelteComponents/fontSuggestion.svelte";
 
 export default class fontSuggester extends PopoverTextInputSuggester<Fuse.FuseResult<string>>{
@@ -14,12 +13,24 @@ export default class fontSuggester extends PopoverTextInputSuggester<Fuse.FuseRe
         super(app, inputEl, viewOptions)
         this.renderFont = renderFont
 
-        this.getInstalledFonts().then(fontList => this.fuzzySearch = new ArrayFuzzySearch(fontList))
+        if (!Platform.isMobile) {
+            this.getInstalledFonts().then(fontList => this.fuzzySearch = new ArrayFuzzySearch(fontList))
+        }
     }
 
     async getInstalledFonts(): Promise<string[]>{
+        if (Platform.isMobile) {
+            return []
+        }
         if(!this.fontList){
-            this.fontList = await getFonts()
+            try {
+                // font-list is desktop only
+                const fontListModule = require('font-list')
+                this.fontList = await fontListModule.getFonts()
+            } catch (e) {
+                console.warn('Could not load system fonts:', e)
+                this.fontList = []
+            }
         }
         return this.fontList
     }

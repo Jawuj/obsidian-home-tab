@@ -71,7 +71,7 @@ export const DEFAULT_SETTINGS: HomeTabSettings = {
     fontColorType: 'default', 
     fontWeight: 600,
     maxResults: 5,
-    showbookmarkedFiles: app.internalPlugins.getPluginById('bookmarks') ? true : false,
+    showbookmarkedFiles: (typeof app !== 'undefined' && app?.internalPlugins?.getPluginById) ? !!app.internalPlugins.getPluginById('bookmarks') : false,
     showRecentFiles: false,
     maxRecentFiles: 5,
     storeRecentFile: true,
@@ -129,7 +129,7 @@ export class HomeTabSettingTab extends PluginSettingTab{
         }
 
 		containerEl.createEl('h2', {text: 'Search settings'});
-        if(this.plugin.app.plugins.getPlugin('omnisearch')){
+        if(this.plugin.app.plugins?.getPlugin?.('omnisearch')){
             new Setting(containerEl)
                 .setName('Use Omnisearch')
                 .setDesc('Set Omnisearch as the default search engine.')
@@ -190,7 +190,7 @@ export class HomeTabSettingTab extends PluginSettingTab{
                 .onChange((value) => {this.plugin.settings.searchDelay = value; this.plugin.saveSettings(); this.plugin.refreshOpenViews()}))
             .then((settingEl) => this.addResetButton(settingEl, 'searchDelay'))
 
-        if(this.plugin.app.plugins.getPlugin('omnisearch')){
+        if(this.plugin.app.plugins?.getPlugin?.('omnisearch')){
             new Setting(containerEl)
                 .setName('Show excerpt (Omnisearch)')
                 .setDesc('Shows the contextual part of the note that matches the search.')
@@ -205,7 +205,7 @@ export class HomeTabSettingTab extends PluginSettingTab{
 
         containerEl.createEl('h2', {text: 'Files display'});
         
-        if(app.internalPlugins.getPluginById('bookmarks')){
+        if(this.app.internalPlugins?.getPluginById?.('bookmarks')){
             new Setting(containerEl)
             .setName('Show bookmarked files')
             .setDesc('Shows bookmarked files under the search bar.')
@@ -293,7 +293,7 @@ export class HomeTabSettingTab extends PluginSettingTab{
                             }
                             if(this.plugin.settings.logoType === 'imagePath'){
                                 const normalizedPath = normalizePath(value)
-                                if (await app.vault.adapter.exists(normalizedPath)){
+                                if (await this.app.vault.adapter.exists(normalizedPath)){
                                     invalidInputIcon.toggleVisibility(false)
                                     this.plugin.settings.logo['imagePath'] = normalizedPath
                                     this.plugin.saveSettings()

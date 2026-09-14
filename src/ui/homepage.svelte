@@ -35,7 +35,7 @@
     const vaultAdapter = app.vault.adapter
     const gradientUniqueId = Math.floor(Math.random()*10e6)
     // const gradientUniqueId = view.leaf.activeTime
-    const isbookmarkedPluginEnabled = app.internalPlugins.getPluginById('bookmarks') ? true : false
+    const isbookmarkedPluginEnabled = (typeof app !== 'undefined' && app?.internalPlugins?.getPluginById) ? !!app.internalPlugins.getPluginById('bookmarks') : false
 
     // @ts-ignore
     const renderRecentFiles: boolean = embeddedView ? embeddedView.recentFiles : pluginSettings.showRecentFiles
