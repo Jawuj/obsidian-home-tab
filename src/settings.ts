@@ -31,6 +31,8 @@ export interface HomeTabSettings extends ObjectKeys{
     iconColor?: string
     iconColorType: ColorChoices
     wordmark: string
+    asciiArt: string
+    asciiArtFontSize: string
     customFont: FontChoiches
     font?: string
     fontSize: string
@@ -66,6 +68,8 @@ export const DEFAULT_SETTINGS: HomeTabSettings = {
     logoScale: 1.2,
     iconColorType: 'default',
     wordmark: 'Obsidian',
+    asciiArt: '',
+    asciiArtFontSize: '12px',
     customFont: 'interfaceFont',
     fontSize: '4em',
     fontColorType: 'default', 
@@ -383,6 +387,37 @@ export class HomeTabSettingTab extends PluginSettingTab{
 					this.plugin.saveSettings()
                 }))
             .then((settingEl) => this.addResetButton(settingEl, 'wordmark'))
+
+        new Setting(containerEl)
+            .setName('ASCII art')
+            .setDesc('Si no esta vacio, reemplaza al titulo. Pega aqui tu arte (braille o ASCII).')
+            .addTextArea((text) => {
+                text
+                    .setValue(this.plugin.settings.asciiArt)
+                    .onChange((value) => {
+                        this.plugin.settings.asciiArt = value
+                        this.plugin.saveSettings()
+                    })
+                text.inputEl.rows = 10
+                text.inputEl.cols = 40
+                text.inputEl.wrap = 'off'
+                text.inputEl.style.whiteSpace = 'pre'
+                text.inputEl.style.fontFamily = 'var(--font-monospace)'
+            })
+            .then((settingEl) => this.addResetButton(settingEl, 'asciiArt'))
+
+        new Setting(containerEl)
+            .setName('ASCII art font size')
+            .setDesc('Tamano del arte. Accepts any CSS font-size value (ej. 10px, 0.8em).')
+            .addText((text) => text
+                .setValue(this.plugin.settings.asciiArtFontSize)
+                .onChange((value) => {
+                    if(cssUnitValidator(value)){
+                        this.plugin.settings.asciiArtFontSize = value
+                        this.plugin.saveSettings()
+                    }
+                }))
+            .then((settingEl) => this.addResetButton(settingEl, 'asciiArtFontSize'))
 
 
         const titleFontSettings = new Setting(containerEl)

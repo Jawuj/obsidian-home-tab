@@ -144,13 +144,19 @@
                     {/if}
                 </div>
             {/if}
-            <div class=home-tab-wordmark>
-                <h1 style="font-family: {pluginSettings.customFont === 'interfaceFont' ? 'var(--interface-font)' : pluginSettings.customFont === 'textFont' ? 'var(--font-text)' : pluginSettings.customFont === 'monospaceFont' ? 'var(--font-monospace)' : pluginSettings.font};
-                            font-size: {pluginSettings.fontSize};
-                            font-weight: {pluginSettings.fontWeight.toString()};
-                            color: {pluginSettings.fontColorType === 'default' ? '' : pluginSettings.fontColorType === 'accentColor' ? 'var(--interactive-accent)' : pluginSettings.fontColor };">
-                    {pluginSettings.wordmark}
-                </h1>
+            <div class="home-tab-wordmark">
+                {#if pluginSettings.asciiArt && pluginSettings.asciiArt.trim() !== ''}
+                    <pre class="home-tab-ascii" style="font-family: {pluginSettings.customFont === 'interfaceFont' ? 'var(--interface-font)' : pluginSettings.customFont === 'textFont' ? 'var(--font-text)' : pluginSettings.customFont === 'monospaceFont' ? 'var(--font-monospace)' : pluginSettings.font};
+                                font-size: {pluginSettings.asciiArtFontSize};
+                                color: {pluginSettings.fontColorType === 'default' ? '' : pluginSettings.fontColorType === 'accentColor' ? 'var(--interactive-accent)' : pluginSettings.fontColor };">{pluginSettings.asciiArt}</pre>
+                {:else}
+                    <h1 style="font-family: {pluginSettings.customFont === 'interfaceFont' ? 'var(--interface-font)' : pluginSettings.customFont === 'textFont' ? 'var(--font-text)' : pluginSettings.customFont === 'monospaceFont' ? 'var(--font-monospace)' : pluginSettings.font};
+                                font-size: {pluginSettings.fontSize};
+                                font-weight: {pluginSettings.fontWeight.toString()};
+                                color: {pluginSettings.fontColorType === 'default' ? '' : pluginSettings.fontColorType === 'accentColor' ? 'var(--interactive-accent)' : pluginSettings.fontColor };">
+                        {pluginSettings.wordmark}
+                    </h1>
+                {/if}
             </div>
         </div>
     {/if}
@@ -199,4 +205,20 @@
             padding-top: 10px;
         }
     }
-</style>
+
+    .home-tab-ascii{
+        margin: 0;
+        padding: 0;
+        background: none;
+        border: none;
+        white-space: pre;
+        text-align: left;
+        line-height: 1;
+        letter-spacing: 0;
+        overflow: visible;
+        max-width: 100%;
+        user-select: text;
+    }
+    .home-tab-wordmark{
+        max-width: 100%;
+    }</style>
