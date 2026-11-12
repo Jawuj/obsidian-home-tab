@@ -59,6 +59,12 @@ export default class HomeTabSearchBar{
             get(this.searchBarEl).focus();
     }
 
+    public openTodayDailyNote(): void {
+        if (!this.app.commands.executeCommandById('daily-notes')) {
+            new Notice("Could not open today's daily note. Make sure Daily notes is enabled.");
+        }
+    }
+
     public load(): void {
         if (this.plugin.settings.omnisearch && this.plugin.app.plugins.getPlugin('omnisearch')) {
             this.fileSuggester = new OmnisearchSuggester(this.plugin.app, this.plugin, this.view, this);

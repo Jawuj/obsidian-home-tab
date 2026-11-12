@@ -12,6 +12,8 @@
     export let contextualMenu: Menu
     export let customIcon: LucideIcon | undefined = undefined
     export let customIconColor: string | undefined = undefined
+    export let iconSize: number = 24
+    export let showFileName: boolean = true
 
     $: resolvedIcon = (customIcon && (customIcon as string).includes('::')) 
         ? ((customIcon as string).split('::')[0] as LucideIcon) 
@@ -41,6 +43,7 @@
 </script>
 
 <div class="home-tab-file-item" class:use-accent-color="{pluginSettings.selectionHighlight === 'accentColor'}"
+    style={`--home-tab-file-icon-size: ${iconSize}px`}
     on:mousedown|preventDefault="{e => handleMouseClick(e, file)}">
     
     <div class="home-tab-file-item-remove_btn" aria-label="File options"
@@ -53,7 +56,7 @@
 
     <div class="home-tab-file-item-preview-icon">
         {#if resolvedIcon}
-            <svg xmlns="http://www.w3.org/2000/svg"  width="24" height="24" 
+            <svg xmlns="http://www.w3.org/2000/svg"  width={iconSize} height={iconSize}
                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="1" stroke-linecap="round" stroke-linejoin="round" 
                         class="lucide-icon lucide lucide-{resolvedIcon}"
@@ -76,9 +79,11 @@
             {/if}
         {/if}
     </div>
-    <div class="home-tab-file-item-name">
-        {filename}
-    </div>
+    {#if showFileName}
+        <div class="home-tab-file-item-name">
+            {filename}
+        </div>
+    {/if}
 </div>
 
 <style>
@@ -105,6 +110,11 @@
         align-items: center;
         justify-content: center;
         padding: var(--size-2-3);
+    }
+
+    .home-tab-file-item-preview-icon :global(svg){
+        width: var(--home-tab-file-icon-size);
+        height: var(--home-tab-file-icon-size);
     }
 
     .home-tab-file-item-name{

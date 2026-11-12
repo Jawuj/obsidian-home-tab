@@ -13,6 +13,7 @@ import { checkFont } from './utils/fontValidator'
 type ColorChoices = 'default' | 'accentColor' | 'custom'
 type LogoChoiches = 'default' | 'imagePath' | 'imageLink' | 'lucideIcon' | 'oldLogo' | 'none'
 type FontChoiches = 'interfaceFont' | 'textFont' | 'monospaceFont' | 'custom'
+type BookmarkLayout = 'grid' | 'invertedPyramid'
 
 interface ObjectKeys {
     [key: string]: any
@@ -41,6 +42,10 @@ export interface HomeTabSettings extends ObjectKeys{
     fontWeight: number
     maxResults: number
     showbookmarkedFiles: boolean
+    maxBookmarkColumns: number
+    bookmarkLayout: BookmarkLayout
+    bookmarkIconSize: number
+    hideBookmarkNames: boolean
     showRecentFiles: boolean
     maxRecentFiles: number
     storeRecentFile: boolean
@@ -76,6 +81,10 @@ export const DEFAULT_SETTINGS: HomeTabSettings = {
     fontWeight: 600,
     maxResults: 5,
     showbookmarkedFiles: (typeof app !== 'undefined' && app?.internalPlugins?.getPluginById) ? !!app.internalPlugins.getPluginById('bookmarks') : false,
+    maxBookmarkColumns: 7,
+    bookmarkLayout: 'invertedPyramid',
+    bookmarkIconSize: 24,
+    hideBookmarkNames: false,
     showRecentFiles: false,
     maxRecentFiles: 5,
     storeRecentFile: true,
@@ -221,6 +230,60 @@ export class HomeTabSettingTab extends PluginSettingTab{
                     // }
                     // value ? this.plugin.bookmarkedFileManager.load() : this.plugin.bookmarkedFileManager.unload() // Detach bookmarkedFileManager instance
                 }))
+
+            new Setting(containerEl)
+                .setName('Maximum bookmark columns')
+                .setDesc('Sets the maximum number of columns used for bookmarked file icons.')
+                .addSlider((slider) => slider
+                    .setLimits(1, 12, 1)
+                    .setValue(this.plugin.settings.maxBookmarkColumns)
+                    .setDynamicTooltip()
+                    .onChange((value) => {
+                        this.plugin.settings.maxBookmarkColumns = value
+                        this.plugin.saveSettings()
+                        this.plugin.refreshOpenViews()
+                    }))
+                .then((settingEl) => this.addResetButton(settingEl, 'maxBookmarkColumns'))
+
+            new Setting(containerEl)
+                .setName('Bookmark layout')
+                .setDesc('Choose a regular grid or centered rows that narrow downward like a pyramid.')
+                .addDropdown((dropdown) => dropdown
+                    .addOption('grid', 'Grid')
+                    .addOption('invertedPyramid', 'Inverted pyramid')
+                    .setValue(this.plugin.settings.bookmarkLayout)
+                    .onChange((value: BookmarkLayout) => {
+                        this.plugin.settings.bookmarkLayout = value
+                        this.plugin.saveSettings()
+                        this.plugin.refreshOpenViews()
+                    }))
+                .then((settingEl) => this.addResetButton(settingEl, 'bookmarkLayout'))
+
+            new Setting(containerEl)
+                .setName('Bookmark icon size')
+                .setDesc('Set the size of the icons shown for bookmarked files.')
+                .addSlider((slider) => slider
+                    .setLimits(12, 64, 4)
+                    .setValue(this.plugin.settings.bookmarkIconSize)
+                    .setDynamicTooltip()
+                    .onChange((value) => {
+                        this.plugin.settings.bookmarkIconSize = value
+                        this.plugin.saveSettings()
+                        this.plugin.refreshOpenViews()
+                    }))
+                .then((settingEl) => this.addResetButton(settingEl, 'bookmarkIconSize'))
+
+            new Setting(containerEl)
+                .setName('Hide bookmark names')
+                .setDesc('Show only the icons for bookmarked files.')
+                .addToggle((toggle) => toggle
+                    .setValue(this.plugin.settings.hideBookmarkNames)
+                    .onChange((value) => {
+                        this.plugin.settings.hideBookmarkNames = value
+                        this.plugin.saveSettings()
+                        this.plugin.refreshOpenViews()
+                    }))
+                .then((settingEl) => this.addResetButton(settingEl, 'hideBookmarkNames'))
         }
 
         new Setting(containerEl)

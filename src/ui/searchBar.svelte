@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { Platform } from "obsidian";
+    import { Calendar } from "lucide-svelte";
+    import { fade } from "svelte/transition";
 	import { filterKeys, type FilterKey, type SearchBarFilterType } from "src/homeTabSearchbar";
     import type HomeTabSearchBar from "src/homeTabSearchbar";
     
@@ -40,10 +42,24 @@
 <div class="home-tab-searchbar-container" bind:this={$container}>
     <div class="home-tab-searchbar"
         class:embedded={embedded}
-        style:width={embedded || isPhone ? "90%" : "50%"}>
+        style:width={embedded || isPhone ? "calc(90% - 56px)" : "50%"}>
         <div class='nav-file-tag home-tab-suggestion-file-tag hide' bind:this={$activeExtEl}></div>
         <input type="search" spellcheck="false" placeholder="Type to start search..." bind:value={inputValue} bind:this={$searchBarEl}
         on:keydown={(e) => handleKeydown(e)}>
+    </div>
+    <div class="home-tab-daily-note-slot">
+        {#if inputValue.length === 0}
+            <button
+                class="home-tab-daily-note-button"
+                type="button"
+                aria-label="Open today's daily note"
+                title="Open today's daily note"
+                style="background: var(--home-tab-searchbar-background) !important; border: var(--input-border-width) solid var(--background-modifier-border) !important; border-radius: var(--input-radius) !important; box-shadow: none !important;"
+                transition:fade={{ duration: 160 }}
+                on:click={() => HomeTabSearchBar.openTodayDailyNote()}>
+                <Calendar size={20} strokeWidth={1.75} />
+            </button>
+        {/if}
     </div>
 </div>
 
@@ -51,19 +67,21 @@
     .home-tab-searchbar-container{
         display: flex;
         align-items: center;
-        flex-direction: column;
+        justify-content: center;
+        gap: 12px;
+        --home-tab-searchbar-background: var(--background-modifier-form-field);
     }
     
     .home-tab-searchbar{
         display: flex;
-        /* width: 50%; */
+        flex: 0 1 auto;
         min-width: 250px;
         max-width: 700px;
-        margin: 0 auto;
+        margin: 0;
 
         height: calc(var(--input-height)*1.25);
 
-        background-color: var(--background-modifier-form-field);
+        background-color: var(--home-tab-searchbar-background);
         border: var(--input-border-width) solid var(--background-modifier-border);
         padding: var(--size-2-3);
         border-radius: var(--input-radius);
@@ -82,6 +100,27 @@
     .home-tab-searchbar input:hover{
         background: none;
         border: none;
+    }
+
+    .home-tab-daily-note-slot{
+        flex: 0 0 44px;
+        width: 44px;
+        height: calc(var(--input-height)*1.25);
+    }
+
+    .home-tab-daily-note-button{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        color: var(--text-muted);
+        appearance: none;
+        cursor: pointer;
+    }
+    .home-tab-daily-note-button:hover{
+        color: var(--text-normal);
     }
 
     .home-tab-suggestion-file-tag.hide{

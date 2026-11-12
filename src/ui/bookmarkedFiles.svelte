@@ -42,25 +42,39 @@
             .setUseNativeMenu(app.vault?.config?.nativeMenus ?? false)
 </script>
 
-<div class="home-tab-bookmarked-files-container">
+<div class="home-tab-bookmarked-files-container"
+    class:invertedPyramid={pluginSettings.bookmarkLayout === 'invertedPyramid'}
+    style={`--home-tab-bookmark-cell-size: ${Math.max(85, pluginSettings.bookmarkIconSize + 20)}px; --home-tab-max-bookmark-width: ${pluginSettings.maxBookmarkColumns * Math.max(85, pluginSettings.bookmarkIconSize + 20)}px`}>
     {#each bookmarkedFiles as item (item.file.path)}
-        <FileDisplayItem file={item.file} customIcon={item.iconId} customIconColor={item.iconColor} {app} {pluginSettings} {contextualMenu}
+        <FileDisplayItem file={item.file} customIcon={item.iconId} customIconColor={item.iconColor}
+            iconSize={pluginSettings.bookmarkIconSize} showFileName={!pluginSettings.hideBookmarkNames}
+            {app} {pluginSettings} {contextualMenu}
         on:itemMenu={(e) => selectedFile = e.detail.file}/>
     {/each}
 </div>
 
 <style>
     .home-tab-bookmarked-files-container{
-        display: flex;
-        align-items: baseline;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(var(--home-tab-bookmark-cell-size), 1fr));
+        align-items: start;
         justify-content: center;
-        flex-wrap: wrap;
         
-        width: 65%;
-        /* min-width: 150px; */
-        max-width: 900px;
+        width: 90%;
+        max-width: var(--home-tab-max-bookmark-width);
         
         padding-top: 30px;
         margin: auto;
+    }
+
+    .home-tab-bookmarked-files-container.invertedPyramid{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .home-tab-bookmarked-files-container.invertedPyramid :global(.home-tab-file-item){
+        flex: 0 0 calc(var(--home-tab-bookmark-cell-size) - 10px);
+        width: calc(var(--home-tab-bookmark-cell-size) - 10px);
     }
 </style>

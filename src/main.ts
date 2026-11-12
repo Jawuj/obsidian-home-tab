@@ -9,6 +9,9 @@ declare module 'obsidian'{
 	interface App{
 		internalPlugins: InternalPlugins
 		plugins: Plugins
+		commands: {
+			executeCommandById: (commandId: string) => boolean
+		}
 		dom: any
 		isMobile: boolean
 	}
