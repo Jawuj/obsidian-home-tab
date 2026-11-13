@@ -29,8 +29,25 @@
     border-radius: 0 0 var(--input-radius) var(--input-radius);
 }
 
+.home-tab-suggestion-container.has-backdrop-blur{
+    background: var(--background-primary);
+    background: color-mix(in srgb, var(--background-primary) 88%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
 .home-tab-searchbar.embedded+.home-tab-suggestion-container, .home-tab-suggestion-container.is-phone{
     width: 90%;
+}
+
+.home-tab-searchbar > .home-tab-suggestion-container{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: var(--layer-menu);
+    width: 100%;
+    margin: 0;
+    background: var(--home-tab-searchbar-background);
 }
 
 

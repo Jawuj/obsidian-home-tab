@@ -66,7 +66,7 @@ export default class SurfingSuggester extends TextInputSuggester<Fuse.FuseResult
     constructor(app: App, plugin: HomeTab, view: View, searchBar: HomeTabSearchBar) {
         super(app, get(searchBar.searchBarEl), get(searchBar.suggestionContainerEl), {
                 // @ts-ignore
-                containerClass: `home-tab-suggestion-container ${Platform.isPhone ? 'is-phone' : ''}`,
+                containerClass: `home-tab-suggestion-container ${Platform.isPhone ? 'is-phone' : ''} ${plugin.settings.searchSuggestionBackdropBlur ? 'has-backdrop-blur' : ''}`,
                 additionalClasses: `${plugin.settings.selectionHighlight === 'accentColor' ? 'use-accent-color' : ''}`,
                 additionalModalInfo: plugin.settings.showShortcuts ? generateHotkeySuggestion([
                     {hotkey: '↑↓', action: 'to navigate'},

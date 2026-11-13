@@ -39,9 +39,10 @@
 
 </script>
 
-<div class="home-tab-searchbar-container" bind:this={$container}>
+<div class="home-tab-searchbar-container">
     <div class="home-tab-searchbar"
         class:embedded={embedded}
+        bind:this={$container}
         style:width={embedded || isPhone ? "calc(90% - 56px)" : "50%"}>
         <div class='nav-file-tag home-tab-suggestion-file-tag hide' bind:this={$activeExtEl}></div>
         <input type="search" spellcheck="false" placeholder="Type to start search..." bind:value={inputValue} bind:this={$searchBarEl}
@@ -73,6 +74,7 @@
     }
     
     .home-tab-searchbar{
+        position: relative;
         display: flex;
         flex: 0 1 auto;
         min-width: 250px;
@@ -92,14 +94,25 @@
         width: 100%;
         height: 100%;
         box-shadow: none;
+        color: var(--text-normal);
+        font-family: var(--font-interface);
         font-size: var(--font-ui-medium);
         background: none;
         border: none;
         padding-left: 12px;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        outline: none;
     }
     .home-tab-searchbar input:hover{
         background: none;
         border: none;
+    }
+    .home-tab-searchbar input::-webkit-search-cancel-button,
+    .home-tab-searchbar input::-webkit-search-decoration {
+        -webkit-appearance: none;
+        appearance: none;
     }
 
     .home-tab-daily-note-slot{

@@ -4,6 +4,7 @@ import { HomeTabSettingTab, DEFAULT_SETTINGS, type HomeTabSettings } from './set
 import { pluginSettingsStore, bookmarkedFiles } from './store'
 import { RecentFileManager } from './recentFiles';
 import { bookmarkedFilesManager } from './bookmarkedFiles';
+import styles from './styles.css';
 
 declare module 'obsidian'{
 	interface App{
@@ -66,6 +67,11 @@ export default class HomeTab extends Plugin {
 	activeEmbeddedHomeTabViews: EmbeddedHomeTab[]
 	
 	async onload() {
+		const styleEl = document.createElement('style');
+		styleEl.textContent = styles;
+		document.head.appendChild(styleEl);
+		this.register(() => styleEl.remove());
+
 		console.log('Loading home-tab plugin')
 		
 		await this.loadSettings();

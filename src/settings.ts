@@ -52,6 +52,7 @@ export interface HomeTabSettings extends ObjectKeys{
     showPath: boolean
     selectionHighlight: ColorChoices
     showShortcuts: boolean
+    searchSuggestionBackdropBlur: boolean
     markdownOnly: boolean
     unresolvedLinks: boolean
     recentFilesStore: recentFileStore[]
@@ -91,6 +92,7 @@ export const DEFAULT_SETTINGS: HomeTabSettings = {
     showPath: true,
     selectionHighlight: 'default',
     showShortcuts: true,
+    searchSuggestionBackdropBlur: true,
     markdownOnly: false,
     unresolvedLinks: false,
     recentFilesStore: [],
@@ -182,6 +184,17 @@ export class HomeTabSettingTab extends PluginSettingTab{
                     this.plugin.saveSettings()
                 }
             ))
+
+        new Setting(containerEl)
+            .setName('Blur search suggestions background')
+            .setDesc('Blurs the content behind the search suggestions for better readability.')
+            .addToggle((toggle) => toggle
+                .setValue(this.plugin.settings.searchSuggestionBackdropBlur)
+                .onChange((value) => {
+                    this.plugin.settings.searchSuggestionBackdropBlur = value
+                    this.plugin.saveSettings()
+                    this.plugin.refreshOpenViews()
+                }))
 
         new Setting(containerEl)
             .setName('Search results')
