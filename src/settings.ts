@@ -45,6 +45,7 @@ export interface HomeTabSettings extends ObjectKeys{
     maxBookmarkColumns: number
     bookmarkLayout: BookmarkLayout
     bookmarkIconSize: number
+    calendarButtonInBookmarks: boolean
     hideBookmarkNames: boolean
     showRecentFiles: boolean
     maxRecentFiles: number
@@ -85,6 +86,7 @@ export const DEFAULT_SETTINGS: HomeTabSettings = {
     maxBookmarkColumns: 7,
     bookmarkLayout: 'invertedPyramid',
     bookmarkIconSize: 24,
+    calendarButtonInBookmarks: false,
     hideBookmarkNames: false,
     showRecentFiles: false,
     maxRecentFiles: 5,
@@ -243,6 +245,17 @@ export class HomeTabSettingTab extends PluginSettingTab{
                     // }
                     // value ? this.plugin.bookmarkedFileManager.load() : this.plugin.bookmarkedFileManager.unload() // Detach bookmarkedFileManager instance
                 }))
+
+            new Setting(containerEl)
+                .setName('Show daily note button in bookmarks')
+                .setDesc('Places the daily note button before your bookmarked files instead of beside the search bar.')
+                .addToggle((toggle) => toggle
+                    .setValue(this.plugin.settings.calendarButtonInBookmarks)
+                    .onChange((value) => {
+                        this.plugin.settings.calendarButtonInBookmarks = value
+                        this.plugin.saveSettings()
+                        this.plugin.refreshOpenViews()
+                    }))
 
             new Setting(containerEl)
                 .setName('Maximum bookmark columns')

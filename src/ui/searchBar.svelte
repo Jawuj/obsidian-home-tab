@@ -7,6 +7,7 @@
     
     export let HomeTabSearchBar: HomeTabSearchBar
     export let embedded: boolean = false
+    export let calendarButtonInBookmarks: boolean = false
     const searchBarEl = HomeTabSearchBar.searchBarEl
     const activeExtEl = HomeTabSearchBar.activeExtEl
     const container = HomeTabSearchBar.suggestionContainerEl
@@ -39,17 +40,18 @@
 
 </script>
 
-<div class="home-tab-searchbar-container">
+<div class="home-tab-searchbar-container"
+    class:expanded={embedded || isPhone}
+    class:calendar-in-bookmarks={calendarButtonInBookmarks}>
     <div class="home-tab-searchbar"
         class:embedded={embedded}
-        bind:this={$container}
-        style:width={embedded || isPhone ? "calc(90% - 56px)" : "50%"}>
+        bind:this={$container}>
         <div class='nav-file-tag home-tab-suggestion-file-tag hide' bind:this={$activeExtEl}></div>
         <input type="search" spellcheck="false" placeholder="Type to start search..." bind:value={inputValue} bind:this={$searchBarEl}
         on:keydown={(e) => handleKeydown(e)}>
     </div>
     <div class="home-tab-daily-note-slot">
-        {#if inputValue.length === 0}
+        {#if inputValue.length === 0 && !calendarButtonInBookmarks}
             <button
                 class="home-tab-daily-note-button"
                 type="button"
@@ -66,17 +68,23 @@
 
 <style>
     .home-tab-searchbar-container{
-        display: flex;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(250px, min(50%, 700px)) minmax(0, 1fr);
         align-items: center;
-        justify-content: center;
-        gap: 12px;
+        width: 100%;
         --home-tab-searchbar-background: var(--background-modifier-form-field);
+    }
+
+    .home-tab-searchbar-container.expanded{
+        grid-template-columns: minmax(0, 1fr) minmax(250px, min(90%, 700px)) minmax(0, 1fr);
     }
     
     .home-tab-searchbar{
+        grid-column: 2;
         position: relative;
         display: flex;
-        flex: 0 1 auto;
+        justify-self: center;
+        width: 100%;
         min-width: 250px;
         max-width: 700px;
         margin: 0;
@@ -116,9 +124,15 @@
     }
 
     .home-tab-daily-note-slot{
-        flex: 0 0 44px;
+        grid-column: 3;
+        justify-self: start;
+        margin-left: 12px;
         width: 44px;
         height: calc(var(--input-height)*1.25);
+    }
+
+    .home-tab-searchbar-container.calendar-in-bookmarks .home-tab-daily-note-slot{
+        display: none;
     }
 
     .home-tab-daily-note-button{

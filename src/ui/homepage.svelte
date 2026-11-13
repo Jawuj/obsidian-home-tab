@@ -161,10 +161,13 @@
         </div>
     {/if}
     
-    <SearchBar {HomeTabSearchBar} embedded={embeddedView ? true : false}/>
+    <SearchBar {HomeTabSearchBar} embedded={embeddedView ? true : false}
+        calendarButtonInBookmarks={pluginSettings.calendarButtonInBookmarks}/>
 
     {#if isbookmarkedPluginEnabled && bookmarkedFileList && renderbookmarkedFiles}
-        <BookmarkedFiles bookmarkedFiles={bookmarkedFileList} {view} {pluginSettings} bookmarkedFileManager={plugin.bookmarkedFileManager}/>
+        <BookmarkedFiles bookmarkedFiles={bookmarkedFileList} {view} {pluginSettings}
+            bookmarkedFileManager={plugin.bookmarkedFileManager}
+            onOpenDailyNote={() => HomeTabSearchBar.openTodayDailyNote()}/>
     {/if}
 
     {#if plugin.recentFileManager && recentFileList.length > 0  && renderRecentFiles}

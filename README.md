@@ -66,6 +66,8 @@ By hovering the top right corner, you can unstar a file or change the displayed 
 
 ![](images/settings-tab.png)
 
+In **Files display**, enable **Show daily note button in bookmarks** to place the calendar button before your bookmarked files instead of beside the search bar.
+
 ---
 ## Known issues
 The plugin may not work with (or interfere with) other plugins that replace the new tabs with their custom view, such as the [Obsidian-Surfing](https://github.com/PKM-er/Obsidian-Surfing) plugin.
